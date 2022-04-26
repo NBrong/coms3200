@@ -1,5 +1,4 @@
 import socket
-import sys
 import time
 
 MAX_PACKET_SIZE = 1500
@@ -8,7 +7,7 @@ MAIN_DATA_SIZE = 1464
 
 FLAGS = {"GET": "0010000", "DAT": "0001000", "FIN": "0000100", "DAT_ACK": "1001000", "FIN_ACK": "1000100",
          "DAT_NAK": "0101000", "GET_CHK": "0010010", "DAT_CHK": "0001010", "FIN_CHK": "0000110",
-         "DAT_ACK_CHK": "1001010", "FIN_ACK_CHK": "1000110", "DAT_NAK_CHK": "0"}
+         "DAT_ACK_CHK": "1001010", "FIN_ACK_CHK": "1000110", "DAT_NAK_CHK": "0101010"}
 
 
 class RUSHBserver:
