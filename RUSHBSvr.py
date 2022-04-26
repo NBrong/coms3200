@@ -42,6 +42,7 @@ class RUSHBserver:
             flag = flag_line[:7]
             payload = data[8:].rstrip(b'\x00')
             current_client = None
+
             for client in self.clients:
                 if client.port == client_port:
                     current_client = client
@@ -58,14 +59,17 @@ class RUSHBserver:
                         self.clients.append(current_client)
                         self.send_packet(current_client, 0, FLAGS["DAT"])
                     elif flag == FLAGS["GET_CHK"]:
-                        try:
-                            file = self.load_file(payload)
-                        except IOError:
+                        if checksum == compute_checksum(payload):
+                            try:
+                                file = self.load_file(payload)
+                            except IOError:
+                                continue
+                            current_client = Client(client_port, file, True, sequence_num, 1,
+                                                    [FLAGS["DAT_ACK_CHK"], FLAGS["DAT_NAK_CHK"]])
+                            self.clients.append(current_client)
+                            self.send_checksum_packet(current_client, 0, FLAGS["DAT_CHK"])
+                        else:
                             continue
-                        current_client = Client(client_port, file, True, sequence_num, 1,
-                                                [FLAGS["DAT_ACK_CHK"], FLAGS["DAT_NAK_CHK"]])
-                        self.clients.append(current_client)
-                        self.send_checksum_packet(current_client, 0, FLAGS["DAT_CHK"])
                 else:
                     continue
 
